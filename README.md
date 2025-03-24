@@ -13,6 +13,30 @@ This project is a FastAPI application that demonstrates filtering and sorting fu
 - Python 3.7+
 - FastAPI
 - Uvicorn
+- Poetry
+
+## Setup
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/bhadri01/fastapi-filter-sort.git
+    cd fastapi-filter-sort
+    ```
+
+2. Install Poetry if you haven't already:
+    ```sh
+    pip install poetry
+    ```
+
+3. Install the dependencies:
+    ```sh
+    poetry install
+    ```
+
+4. Run the application:
+    ```sh
+    python examples/main.py
+    ```
 
 ## Contributing
 
