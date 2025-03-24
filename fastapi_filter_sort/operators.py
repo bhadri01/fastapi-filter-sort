@@ -1,7 +1,8 @@
 # app/filters/operators.py
 
-from sqlalchemy import and_, or_, operators
-from .core import _adjust_date_range
+from sqlalchemy import and_, or_
+from sqlalchemy.sql import operators
+from .utils import _adjust_date_range
 
 LOGICAL_OPERATORS = {
     "$and": and_,

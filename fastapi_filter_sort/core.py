@@ -2,45 +2,10 @@
 
 from fastapi import HTTPException
 from sqlalchemy.orm import RelationshipProperty, aliased
-from sqlalchemy.sql import Select, and_, or_
+from sqlalchemy.sql import Select, and_
 from typing import Any, Optional, Dict, Tuple
-from datetime import datetime, timedelta
 import json
-
 from .operators import LOGICAL_OPERATORS, COMPARISON_OPERATORS
-from sqlalchemy import DateTime
-
-
-def _parse_datetime(value: str) -> datetime:
-    for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%SZ"):
-        try:
-            return datetime.strptime(value, fmt)
-        except ValueError:
-            continue
-    raise HTTPException(
-        status_code=400, detail=f"Invalid date format: {value}")
-
-
-def _adjust_date_range(column, value: str, operator: str) -> Tuple[Any, bool]:
-    if not isinstance(column.type, DateTime) or not isinstance(value, str):
-        return value, False
-
-    dt = _parse_datetime(value)
-    if len(value.split("T")) == 1 and " " not in value:
-        if operator == "$eq":
-            return and_(column >= dt, column < dt + timedelta(days=1)), True
-        elif operator == "$ne":
-            return or_(column < dt, column >= dt + timedelta(days=1)), True
-        elif operator == "$gt":
-            return dt + timedelta(days=1), False
-        elif operator == "$gte":
-            return dt, False
-        elif operator == "$lt":
-            return dt, False
-        elif operator == "$lte":
-            return dt + timedelta(days=1), False
-    return dt, False
-
 
 def resolve_and_join_column(model, nested_keys: list[str], query: Select, joins: dict) -> Tuple[Any, Select]:
     current_model = model

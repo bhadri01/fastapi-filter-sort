@@ -5,8 +5,11 @@ from fastapi import HTTPException
 from .core import parse_filter_query, parse_filters, resolve_and_join_column
 
 
-def build_query(cls, db_session, params):
-    query = select(cls).where(cls.deleted_at.is_(None))
+def build_query(cls, params):
+    if hasattr(cls, 'deleted_at'):
+        query = select(cls).where(cls.deleted_at.is_(None))
+    else:
+        query = select(cls)
 
     # Filters
     parsed_filters = parse_filter_query(params.filters)
@@ -46,4 +49,4 @@ def build_query(cls, db_session, params):
         query = query.order_by(
             asc(column) if sort_dir.lower() == "asc" else desc(column))
 
-    return db_session.execute(query).scalars()
+    return query
